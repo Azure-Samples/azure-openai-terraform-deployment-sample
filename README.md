@@ -1,0 +1,1 @@
+# azure-openai-terraform-deployment-sample
