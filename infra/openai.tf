@@ -1,5 +1,6 @@
 module "openai" {
-  source              = "git::https://github.com/Azure/terraform-azurerm-openai.git"
+  source              = "Azure/openai/azurerm"
+  version             = "0.1.0"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
   private_endpoint = {
