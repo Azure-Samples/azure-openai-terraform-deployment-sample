@@ -1,47 +1,53 @@
 """
-create a ".env" file with the following:
-OPENAI_API_TYPE = azure
-OPENAI_API_VERSION = 2023-03-15-preview
-OPENAI_API_BASE = 'https://eastus.api.cognitive.microsoft.com/' # Replace with the URL of an Azure OpenAI
-OPENAI_API_KEY = '' # Replace with the corresponding API key
+Streamlit application for chatbot using Azure OpenAI and Llama_index.
+The application allows you to upload a document and chat with the chatbot using the document as context.
 
-to run the file:
+In order to run the application, you need to 
+create a ".env" file with the following:
+    OPENAI_API_TYPE = azure
+    OPENAI_API_VERSION = 2023-03-15-preview
+    OPENAI_API_BASE = 'https://eastus.api.cognitive.microsoft.com/' # Replace with the URL of an Azure OpenAI
+    OPENAI_API_KEY = '' # Replace with the corresponding API key
+
+To run the application, use the following command:
 streamlit run chatbot.py
 """
-import logging
-import sys
-
-logging.basicConfig(stream=sys.stdout, level=logging.INFO) # logging.DEBUG for more verbose output
-#logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
-logging.getLogger("llama_index").setLevel(logging.DEBUG)
-
 
 import os
+import sys
+import logging
+from langchain.chat_models import AzureChatOpenAI
+from langchain.embeddings import OpenAIEmbeddings
+
 import streamlit as st
-from llama_index import download_loader, SimpleDirectoryReader
-from llama_index.node_parser import SimpleNodeParser
 from llama_index import (
+    download_loader,
+    SimpleDirectoryReader,
     LLMPredictor,
     GPTVectorStoreIndex,
     PromptHelper,
     ServiceContext,
     StorageContext,
     load_index_from_storage,
+    LangchainEmbedding
 )
 from llama_index.logger import LlamaLogger
 
-from langchain.chat_models import AzureChatOpenAI
-from langchain.embeddings import OpenAIEmbeddings
-from llama_index import LangchainEmbedding
+from dotenv import load_dotenv, dotenv_values
 
-from dotenv import load_dotenv
-from dotenv import dotenv_values
 
-load_dotenv()
-config = dotenv_values(".env")
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logging.getLogger("llama_index").setLevel(logging.DEBUG)
 
+index = None
 doc_path = "./data/"
 index_file = "index.json"
+
+if "config" not in st.session_state:
+    # Read the environment variables
+    load_dotenv()
+    config = dotenv_values(".env")
+    st.session_state.config = config
 
 if "response" not in st.session_state:
     st.session_state.response = ""
@@ -50,7 +56,6 @@ if "response" not in st.session_state:
 if "current_file" not in st.session_state:
     st.session_state.current_file = None
 
-
 def send_click():
     query_engine = index.as_query_engine()
     # answer = query_engine.query(st.session_state.prompt)
@@ -58,38 +63,37 @@ def send_click():
     st.session_state.response = query_engine.query(st.session_state.prompt)
     st.session_state.lamalogs = service_context.llama_logger.get_logs()
 
-
-index = None
 st.title("Azure OpenAI Doc Chatbot")
 
 sidebar_placeholder = st.sidebar.container()
 
 uploaded_file = st.file_uploader("Choose a file")
 
+# Create the chat llm
 llm = AzureChatOpenAI(
     deployment_name="gpt-35-turbo",
     model_kwargs={
-        "api_key": config["OPENAI_API_KEY"],
-        "api_base": config["OPENAI_API_BASE"],
-        "api_type": config["OPENAI_API_TYPE"],
-        "api_version": config["OPENAI_API_VERSION"],
+        "api_key": st.session_state.config["OPENAI_API_KEY"],
+        "api_base": st.session_state.config["OPENAI_API_BASE"],
+        "api_type": st.session_state.config["OPENAI_API_TYPE"],
+        "api_version": st.session_state.config["OPENAI_API_VERSION"],
     },
 )
 
+# Create the embedding llm
 embedding_llm = LangchainEmbedding(
     OpenAIEmbeddings(
         model="text-embedding-ada-002",
         deployment="text-embedding-ada-002",
-        openai_api_key=config["OPENAI_API_KEY"],
-        openai_api_base=config["OPENAI_API_BASE"],
-        openai_api_type=config["OPENAI_API_TYPE"],
-        openai_api_version=config["OPENAI_API_VERSION"],
+        openai_api_key=st.session_state.config["OPENAI_API_KEY"],
+        openai_api_base=st.session_state.config["OPENAI_API_BASE"],
+        openai_api_type=st.session_state.config["OPENAI_API_TYPE"],
+        openai_api_version=st.session_state.config["OPENAI_API_VERSION"],
     ),
     embed_batch_size=1,
 )
 
-
-# llama_index provides LLMPredictor
+# Create llama_index LLMPredictor
 llm_predictor = LLMPredictor(llm=llm)
 max_input_size = 4096
 num_output = 256
@@ -98,7 +102,7 @@ prompt_helper = PromptHelper(max_input_size, num_output, max_chunk_overlap)
 
 llama_logger = LlamaLogger()
 
-# llama_index provides ServiceContext
+# Create llama_index ServiceContext
 service_context = ServiceContext.from_defaults(
     llm_predictor=llm_predictor,
     prompt_helper=prompt_helper,
@@ -107,7 +111,8 @@ service_context = ServiceContext.from_defaults(
     llama_logger=llama_logger
 )
 
-if uploaded_file is not None and uploaded_file.name != st.session_state.current_file:
+if uploaded_file and uploaded_file.name != st.session_state.current_file:
+    # Ingest the document and create the index
     with st.spinner('Ingesting the file..'):
         doc_files = os.listdir(doc_path)
         for doc_file in doc_files:
@@ -116,8 +121,6 @@ if uploaded_file is not None and uploaded_file.name != st.session_state.current_
         bytes_data = uploaded_file.read()
         with open(f"{doc_path}{uploaded_file.name}", "wb") as f:
             f.write(bytes_data)
-
-        #SimpleDirectoryReader = download_loader("SimpleDirectoryReader")
 
         loader = SimpleDirectoryReader(doc_path, recursive=True, exclude_hidden=True)
         documents = loader.load_data()
@@ -136,6 +139,7 @@ if uploaded_file is not None and uploaded_file.name != st.session_state.current_
     st.success('Done!')
 
 elif os.path.exists(index_file):
+    # Read from storage context
     storage_context = StorageContext.from_defaults(persist_dir=index_file)
     index = load_index_from_storage(
         storage_context, index_id="vector_index", service_context=service_context
@@ -149,7 +153,7 @@ elif os.path.exists(index_file):
     sidebar_placeholder.subheader(doc_filename)
     sidebar_placeholder.write(documents[0].get_text()[:500] + "...")
 
-if index != None:
+if index:
     st.text_input("Ask something: ", key="prompt", on_change=send_click)
     st.button("Send", on_click=send_click)
     if st.session_state.response:
@@ -160,4 +164,3 @@ if index != None:
         st.code(st.session_state.lamalogs[0]['formatted_prompt_template'])
         st.write("This is the initial response:")
         st.code(st.session_state.lamalogs[1]['initial_response'])
-
