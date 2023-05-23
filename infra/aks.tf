@@ -33,6 +33,10 @@ module "aks" {
     "Agent" : "defaultnodepoolagent"
   }
 
+  attached_acr_id_map = {
+    acr = azurerm_container_registry.acr.id
+  }
+
   ingress_application_gateway_enabled = false
 
   network_policy                 = "azure"

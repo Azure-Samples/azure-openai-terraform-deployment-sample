@@ -1,0 +1,53 @@
+#!/bin/bash
+az aks get-credentials --resource-group ${resourceGroup} --name ${aksName} --overwrite-existing
+az acr login --name ${registry}
+az acr build --registry ${registry} --image chatbot:latest ./../sample-application
+kubectl apply -f - <<EOF
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chatbot-config
+data:
+  .env: |
+    OPENAI_API_TYPE=azure
+    OPENAI_API_VERSION=2023-03-15-preview
+    OPENAI_API_BASE=${endpoint}
+    OPENAI_API_KEY=${key}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: chatbot
+  name: chatbot
+spec:
+  containers:
+  - image: ${registry}.azurecr.io/chatbot:latest
+    imagePullPolicy: Always
+    name: chatbot
+    ports:
+    - containerPort: 8501
+      protocol: TCP
+    volumeMounts:
+    - mountPath: /app/.env
+      name: chatbot-config
+      subPath: .env
+  volumes:
+  - name: chatbot-config
+    configMap:
+      name: chatbot-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chatbot
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8501
+  selector:
+    run: chatbot
+  type: LoadBalancer
+EOF
