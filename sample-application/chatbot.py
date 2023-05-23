@@ -46,6 +46,10 @@ index_file = "index.json"
 if "response" not in st.session_state:
     st.session_state.response = ""
 
+# save current file name to avoid reprocessing document
+if "current_file" not in st.session_state:
+    st.session_state.current_file = None
+
 
 def send_click():
     query_engine = index.as_query_engine()
@@ -103,7 +107,7 @@ service_context = ServiceContext.from_defaults(
     llama_logger=llama_logger
 )
 
-if uploaded_file is not None:
+if uploaded_file is not None and uploaded_file.name != st.session_state.current_file:
     with st.spinner('Ingesting the file..'):
         doc_files = os.listdir(doc_path)
         for doc_file in doc_files:
@@ -127,6 +131,8 @@ if uploaded_file is not None:
 
         index.set_index_id("vector_index")
         index.storage_context.persist(index_file)
+        st.session_state.current_file = uploaded_file.name
+        st.session_state.response = ""  # clean up the response when new file is uploaded
     st.success('Done!')
 
 elif os.path.exists(index_file):
