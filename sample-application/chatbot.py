@@ -5,7 +5,7 @@ The application allows you to upload a document and chat with the chatbot using 
 In order to run the application, you need to
 create a ".env" file with the following:
     OPENAI_API_TYPE = azure
-    OPENAI_API_VERSION = 2023-03-15-preview
+    OPENAI_API_VERSION = 2023-05-15
     OPENAI_API_BASE = 'https://eastus.api.cognitive.microsoft.com/' # Replace with the URL of an Azure OpenAI
     OPENAI_API_KEY = '' # Replace with the corresponding API key
 
