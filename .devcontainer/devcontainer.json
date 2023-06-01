@@ -11,6 +11,8 @@
             "version": "latest",
             "helm": "latest",
             "minikube": "latest"
-        }
-    },
+        },
+        "ghcr.io/dhoeric/features/stern:1": {},
+        "ghcr.io/devcontainers-contrib/features/kubectx-kubens:1": {}
+    }
 }
