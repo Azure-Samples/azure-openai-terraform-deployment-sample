@@ -1,18 +1,18 @@
 # Azure OpenAI Terraform deployment for sample chatbot
 
-This sample application deploys an AI-powered document search using Azure OpenAI Service, Azure Kubernetes Service (AKS), and a Python application leveraging the [Llama index](https://gpt-index.readthedocs.io/en/latest/). The application will be deployed within a virtual network to ensure security and isolation. Users will be able to upload documents and ask questions based on the content of the uploaded documents.
+This sample application deploys an AI-powered document search using Azure OpenAI Service, Azure Kubernetes Service (AKS), and a Python application leveraging the [Llama index](https://gpt-index.readthedocs.io/en/latest/) ans [Streamlit](https://docs.streamlit.io/library/get-started). The application will be deployed within a virtual network to ensure security and isolation. Users will be able to upload documents and ask questions based on the content of the uploaded documents.
 
-### Prerequisites
+## Prerequisites
 
-- Azure Subscription.
+- Azure subscription. If you don't have an Azure subscription, [create a free account](https://azure.microsoft.com/free/?ref=microsoft.com&utm_source=microsoft.com&utm_medium=docs&utm_campaign=visualstudio) before you begin.
 - Subscription access to Azure OpenAI service. Request Access to Azure OpenAI Service [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu).
-- Terraform.
+- [Terraform](https://learn.microsoft.com/azure/developer/terraform/quickstart-configure).
 
 The easiest way to run this sample is to run it with [GitHub Codespaces](https://github.com/codespaces)
 
-### Quickstart
+## Quickstart
 
-#### (Optional) configure GitHub Codespaces secrets to access your Azure subscription
+### (Optional) configure GitHub Codespaces secrets to access your Azure subscription
 
 - Run the following command to create a service principal with the "Owner" role for a specific subscription, and outputs its information in JSON format.
 
@@ -30,7 +30,7 @@ The easiest way to run this sample is to run it with [GitHub Codespaces](https:/
 
 - Open your [GitHub Codespace](https://github.com/codespaces).
 
-#### Run the Terraform
+### Run the Terraform
 
 - Clone or fork this repository. (Skip if using GitHub codespaces)
    ```
@@ -70,3 +70,4 @@ The easiest way to run this sample is to run it with [GitHub Codespaces](https:/
 ## Resources
 
 - [Azure OpenAI](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/overview)
+- [Azure OpenAI Terraform verified module](https://registry.terraform.io/modules/Azure/openai/azurerm/latest).
