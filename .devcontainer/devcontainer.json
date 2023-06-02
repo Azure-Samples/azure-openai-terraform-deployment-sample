@@ -1,0 +1,30 @@
+{
+  "name": "Terraform AzureCLI and Kubectl",
+  "postAttachCommand": "bash .devcontainer/script.sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "go.toolsManagement.checkForUpdates": "local",
+        "go.useLanguageServer": true
+      },
+      "extensions": [
+        "hashicorp.terraform"
+      ]
+    }
+  },
+  "features": {
+    "azure-cli": "latest",
+    "terraform": {
+      "version": "latest",
+      "tflint": "latest",
+      "terragrunt": "latest"
+    },
+    "kubectl-helm-minikube": {
+      "version": "latest",
+      "helm": "latest",
+      "minikube": "latest"
+    },
+    "ghcr.io/dhoeric/features/stern:1": {},
+    "ghcr.io/devcontainers-contrib/features/kubectx-kubens:1": {}
+  }
+}

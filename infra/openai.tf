@@ -1,6 +1,6 @@
 module "openai" {
   source              = "Azure/openai/azurerm"
-  version             = "0.1.0"
+  version             = "0.1.1"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
   private_endpoint = {

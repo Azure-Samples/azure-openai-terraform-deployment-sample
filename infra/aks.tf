@@ -24,6 +24,8 @@ module "aks" {
   agents_availability_zones         = ["1", "2"]
   agents_type                       = "VirtualMachineScaleSets"
   agents_size                       = "Standard_D3_v2"
+  workload_identity_enabled         = true
+  oidc_issuer_enabled               = true
 
   agents_labels = {
     "nodepool" : "defaultnodepool"

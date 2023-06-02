@@ -2,10 +2,10 @@
 Streamlit application for chatbot using Azure OpenAI and Llama_index.
 The application allows you to upload a document and chat with the chatbot using the document as context.
 
-In order to run the application, you need to 
+In order to run the application, you need to
 create a ".env" file with the following:
     OPENAI_API_TYPE = azure
-    OPENAI_API_VERSION = 2023-03-15-preview
+    OPENAI_API_VERSION = 2023-05-15
     OPENAI_API_BASE = 'https://eastus.api.cognitive.microsoft.com/' # Replace with the URL of an Azure OpenAI
     OPENAI_API_KEY = '' # Replace with the corresponding API key
 
@@ -18,6 +18,7 @@ import sys
 import logging
 from langchain.chat_models import AzureChatOpenAI
 from langchain.embeddings import OpenAIEmbeddings
+from azure.identity import ManagedIdentityCredential
 
 import streamlit as st
 from llama_index import (
@@ -47,6 +48,12 @@ if "config" not in st.session_state:
     # Read the environment variables
     load_dotenv()
     config = dotenv_values(".env")
+    # Check if AZURE_CLIENT_ID env variable is set
+    if "AZURE_CLIENT_ID" in os.environ:
+       credential = ManagedIdentityCredential(client_id=os.environ["AZURE_CLIENT_ID"])
+       config["OPENAI_API_KEY"]= credential.get_token("https://cognitiveservices.azure.com/.default").token
+    else:
+        logging.info("AZURE_CLIENT_ID not set, using OPENAI_API_KEY from .env file")
     st.session_state.config = config
 
 if "response" not in st.session_state:
