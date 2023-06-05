@@ -8,7 +8,7 @@ This sample application deploys an AI-powered document search using Azure OpenAI
 - Subscription access to Azure OpenAI service. Request Access to Azure OpenAI Service [here](https://customervoice.microsoft.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR7en2Ais5pxKtso_Pz4b1_xUOFA5Qk1UWDRBMjg0WFhPMkIzTzhKQ1dWNyQlQCN0PWcu).
 - [Terraform](https://learn.microsoft.com/azure/developer/terraform/quickstart-configure).
 
-The easiest way to run this sample is to run it with [GitHub Codespaces](https://github.com/codespaces)
+The easiest way to run this sample is to run it creating a new [GitHub Codespace](https://codespaces.new/Azure-Samples/azure-openai-terraform-deployment-sample)
 
 ## Quickstart
 
