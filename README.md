@@ -2,7 +2,7 @@
 
 This sample application deploys an AI-powered document search using Azure OpenAI Service, Azure Kubernetes Service (AKS), and a Python application leveraging the [Llama index](https://gpt-index.readthedocs.io/en/latest/) ans [Streamlit](https://docs.streamlit.io/library/get-started). The application will be deployed within a virtual network to ensure security and isolation. Users will be able to upload documents and ask questions based on the content of the uploaded documents.
 
-![diagram](.images/diagram.png)
+![diagram](./images/diagram.png)
 
 ## Prerequisites
 
