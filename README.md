@@ -28,7 +28,7 @@ The easiest way to run this sample is to run it with [GitHub Codespaces](https:/
 
     ![codespace_secrets](./images/codespace_secrets.png)
 
-- Open your [GitHub Codespace](https://github.com/codespaces).
+- Follow this link to create a new [GitHub Codespace](https://codespaces.new/Azure-Samples/azure-openai-terraform-deployment-sample).
 
 ### Run the Terraform
 
