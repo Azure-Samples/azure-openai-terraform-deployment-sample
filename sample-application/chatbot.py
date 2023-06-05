@@ -22,7 +22,6 @@ from azure.identity import ManagedIdentityCredential
 
 import streamlit as st
 from llama_index import (
-    download_loader,
     SimpleDirectoryReader,
     LLMPredictor,
     GPTVectorStoreIndex,
@@ -152,7 +151,6 @@ elif os.path.exists(index_file):
         storage_context, index_id="vector_index", service_context=service_context
     )
 
-    SimpleDirectoryReader = download_loader("SimpleDirectoryReader")
     loader = SimpleDirectoryReader(doc_path, recursive=True, exclude_hidden=True)
     documents = loader.load_data()
     doc_filename = os.listdir(doc_path)[0]
