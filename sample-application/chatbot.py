@@ -78,12 +78,10 @@ uploaded_file = st.file_uploader("Choose a file")
 # Create the chat llm
 llm = AzureChatOpenAI(
     deployment_name="gpt-35-turbo",
-    model_kwargs={
-        "api_key": st.session_state.config["OPENAI_API_KEY"],
-        "api_base": st.session_state.config["OPENAI_API_BASE"],
-        "api_type": st.session_state.config["OPENAI_API_TYPE"],
-        "api_version": st.session_state.config["OPENAI_API_VERSION"],
-    },
+    openai_api_key=st.session_state.config["OPENAI_API_KEY"],
+    openai_api_base=st.session_state.config["OPENAI_API_BASE"],
+    openai_api_type=st.session_state.config["OPENAI_API_TYPE"],
+    openai_api_version=st.session_state.config["OPENAI_API_VERSION"],
 )
 
 # Create the embedding llm
