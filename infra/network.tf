@@ -10,6 +10,6 @@ module "vnet" {
     }
   }
   virtual_network_address_space = ["10.52.0.0/16"]
-  virtual_network_location      = "eastus"
+  virtual_network_location      = var.region
   virtual_network_name          = "vnet"
 }
