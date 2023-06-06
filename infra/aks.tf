@@ -2,8 +2,8 @@ module "aks" {
   source                            = "Azure/aks/azurerm"
   version                           = "6.8.0"
   resource_group_name               = azurerm_resource_group.this.name
-  kubernetes_version                = null # will install the lastest version
-  orchestrator_version              = null # will install the lastest version
+  kubernetes_version                = null # will install the latest version
+  orchestrator_version              = null # will install the latest version
   prefix                            = "openai"
   network_plugin                    = "azure"
   vnet_subnet_id                    = lookup(module.vnet.vnet_subnets_name_id, "subnet0")

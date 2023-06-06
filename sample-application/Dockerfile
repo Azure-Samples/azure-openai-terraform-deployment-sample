@@ -21,9 +21,4 @@ COPY chatbot.py /app
 
 EXPOSE 8501
 
-ENV OPENAI_API_TYPE=azure
-ENV OPENAI_API_VERSION=2023-03-15-preview
-ENV OPENAI_API_BASE=url
-ENV OPENAI_API_KEY=secret
-
 ENTRYPOINT ["streamlit", "run", "chatbot.py", "--server.port=8501", "--server.address=0.0.0.0"]

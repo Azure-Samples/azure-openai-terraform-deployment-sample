@@ -12,6 +12,8 @@ This sample application deploys an AI-powered document search using Azure OpenAI
 
 The easiest way to run this sample is to run it creating a new [GitHub Codespace](https://codespaces.new/Azure-Samples/azure-openai-terraform-deployment-sample)
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/azure-openai-terraform-deployment-sample)
+
 ## Quickstart
 
 ### (Optional) configure GitHub Codespaces secrets to access your Azure subscription
@@ -31,6 +33,8 @@ The easiest way to run this sample is to run it creating a new [GitHub Codespace
     ![codespace_secrets](./images/codespace_secrets.png)
 
 - Follow this link to create a new [GitHub Codespace](https://codespaces.new/Azure-Samples/azure-openai-terraform-deployment-sample).
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/azure-openai-terraform-deployment-sample)
 
 ### Run the Terraform
 
