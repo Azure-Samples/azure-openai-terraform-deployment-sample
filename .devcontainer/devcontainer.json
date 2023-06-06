@@ -3,13 +3,11 @@
   "postAttachCommand": "bash .devcontainer/script.sh",
   "customizations": {
     "vscode": {
-      "settings": {
-        "go.toolsManagement.checkForUpdates": "local",
-        "go.useLanguageServer": true
-      },
       "extensions": [
-        "hashicorp.terraform"
-      ]
+		"hashicorp.terraform",
+		"ms-python.python",
+		"ms-azuretools.vscode-docker"
+	]
     }
   },
   "features": {
