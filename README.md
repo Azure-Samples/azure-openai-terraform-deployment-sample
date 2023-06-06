@@ -28,7 +28,7 @@ The easiest way to run this sample is to run it creating a new [GitHub Codespace
 
     ![codespace_create](./images/codespace-create.png)
 
-- In your github account, go to Settings. On the left pane, select Codespaces tab and create a secret for `ARM_CLIENT_ID`, `ARM_CLIENT_ID`, `ARM_SUBSCRIPTION_ID` and `ARM_TENANT_ID` values, as shown in the image below. For each secret, on the Repository access section, click on the "Select repositories" dropdown menu and select "Azure-Sample/azure-openai-terraform-deployment-sample".
+- In your github account, go to Settings. On the left pane, select Codespaces tab and create a secret for `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_SUBSCRIPTION_ID` and `ARM_TENANT_ID` values, as shown in the image below. For each secret, on the Repository access section, click on the "Select repositories" dropdown menu and select "Azure-Sample/azure-openai-terraform-deployment-sample".
 
     ![codespace_secrets](./images/codespace_secrets.png)
 
