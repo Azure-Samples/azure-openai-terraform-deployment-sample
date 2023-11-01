@@ -1,6 +1,6 @@
 module "aks" {
   source                            = "Azure/aks/azurerm"
-  version                           = "6.8.0"
+  version                           = "7.4.0"
   resource_group_name               = azurerm_resource_group.this.name
   kubernetes_version                = null # will install the latest version
   orchestrator_version              = null # will install the latest version
@@ -43,7 +43,6 @@ module "aks" {
 
   network_policy                 = "azure"
   net_profile_dns_service_ip     = "10.0.0.10"
-  net_profile_docker_bridge_cidr = "172.17.0.1/16"
   net_profile_service_cidr       = "10.0.0.0/16"
 
   key_vault_secrets_provider_enabled = true
