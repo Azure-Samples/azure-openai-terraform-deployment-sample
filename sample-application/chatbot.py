@@ -67,7 +67,6 @@ def send_click():
     # answer = query_engine.query(st.session_state.prompt)
     # st.session_state.response = answer.get_formatted_sources()
     st.session_state.response = query_engine.query(st.session_state.prompt)
-    st.session_state.lamalogs = service_context.llama_logger.get_logs()
 
 st.title("Azure OpenAI Doc Chatbot")
 
@@ -101,7 +100,7 @@ embedding_llm = LangchainEmbedding(
 llm_predictor = LLMPredictor(llm=llm)
 max_input_size = 4096
 num_output = 256
-max_chunk_overlap = 20
+max_chunk_overlap = 0.5
 prompt_helper = PromptHelper(max_input_size, num_output, max_chunk_overlap)
 
 llama_logger = LlamaLogger()
@@ -162,8 +161,3 @@ if index:
     if st.session_state.response:
         st.subheader("Response: ")
         st.success(st.session_state.response, icon="🤖")
-        st.subheader("Debug information: ")
-        st.write("This is the formatted prompt template:")
-        st.code(st.session_state.lamalogs[0]['formatted_prompt_template'])
-        st.write("This is the initial response:")
-        st.code(st.session_state.lamalogs[1]['initial_response'])

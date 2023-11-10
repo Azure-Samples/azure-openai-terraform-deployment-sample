@@ -1,6 +1,5 @@
 #!/bin/bash
 az aks get-credentials --resource-group ${resourceGroup} --name ${aksName} --overwrite-existing
-az acr login --name ${registry}
 az acr build --registry ${registry} --image chatbot:latest ./../sample-application
 
 az identity federated-credential create --name chatbotfederatedidentity --identity-name chatbot --resource-group ${resourceGroup} --issuer ${oidc_url} --subject system:serviceaccount:chatbot:chatbot
