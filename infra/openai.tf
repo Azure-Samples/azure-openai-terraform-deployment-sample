@@ -22,6 +22,7 @@ module "openai" {
       model_name    = "gpt-35-turbo"
       model_version = "0301"
       scale_type    = "Standard"
+      capacity      = 120
     },
     "embedding_model" = {
       name          = "text-embedding-ada-002"
@@ -29,6 +30,7 @@ module "openai" {
       model_name    = "text-embedding-ada-002"
       model_version = "2"
       scale_type    = "Standard"
+      capacity      = 120
     },
   }
   depends_on = [
