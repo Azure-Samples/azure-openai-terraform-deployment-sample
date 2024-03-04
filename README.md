@@ -24,6 +24,12 @@ The easiest way to run this sample is to run it creating a new [GitHub Codespace
     az ad sp create-for-rbac --role="Owner" --scopes="/subscriptions/<SUBSCRIPTION_ID>" -o json
     ```
 
+  Note: If your organization has a policy prohibiting Service Principals with passwords on the tenant, create a Service Principal with a certificate:
+
+    ```
+    az ad sp create-for-rbac --role="Owner" --scopes="/subscriptions/<SUBSCRIPTION_ID>" --create-cert -o json
+
+
 - In your github account go to Codespaces and Create a new Codespace with "Azure-Sample/azure-openai-terraform-deployment-sample" repository and select the main branch.
 
     ![codespace_create](./images/codespace-create.png)
@@ -31,6 +37,8 @@ The easiest way to run this sample is to run it creating a new [GitHub Codespace
 - In your github account, go to Settings. On the left pane, select Codespaces tab and create a secret for `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_SUBSCRIPTION_ID` and `ARM_TENANT_ID` values, as shown in the image below. For each secret, on the Repository access section, click on the "Select repositories" dropdown menu and select "Azure-Sample/azure-openai-terraform-deployment-sample".
 
     ![codespace_secrets](./images/codespace_secrets.png)
+
+  Note: if using Service Principal certificate set `ARM_CLIENT_CERTIFICATE` as `ARM_CLIENT_CERTIFICATE=$(cat cert-and-private-key.pem| base64)`
 
 - Follow this link to create a new [GitHub Codespace](https://codespaces.new/Azure-Samples/azure-openai-terraform-deployment-sample).
 
