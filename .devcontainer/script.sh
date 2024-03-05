@@ -5,7 +5,7 @@ if [ -z "$ARM_CLIENT_ID" ]; then
     exit 0
 fi
 
-# Check if either $ARM_CLIENT_SECRET or $ARM_CLIENT_CERTIFICATE is set
+# Check if both $ARM_CLIENT_SECRET and $ARM_CLIENT_CERTIFICATE are empty
 if [ -z "$ARM_CLIENT_SECRET" ] && [ -z "$ARM_CLIENT_CERTIFICATE" ]; then
     echo "Either ARM_CLIENT_SECRET or ARM_CLIENT_CERTIFICATE should be set"
     exit 0
