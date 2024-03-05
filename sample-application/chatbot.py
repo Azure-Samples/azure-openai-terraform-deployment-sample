@@ -17,21 +17,24 @@ import os
 import sys
 import logging
 from langchain.chat_models import AzureChatOpenAI
-from langchain.embeddings import OpenAIEmbeddings
+from langchain.embeddings import AzureOpenAIEmbeddings
 from azure.identity import ManagedIdentityCredential
 
 import streamlit as st
-from llama_index import (
+from llama_index.core import (
     SimpleDirectoryReader,
-    LLMPredictor,
     GPTVectorStoreIndex,
     PromptHelper,
     ServiceContext,
     StorageContext,
     load_index_from_storage,
-    LangchainEmbedding
+    Settings
+
 )
-from llama_index.logger import LlamaLogger
+
+from llama_index.llms.langchain import LangChainLLM
+from llama_index.embeddings.langchain import LangchainEmbedding
+
 
 from dotenv import load_dotenv, dotenv_values
 
@@ -74,8 +77,10 @@ sidebar_placeholder = st.sidebar.container()
 
 uploaded_file = st.file_uploader("Choose a file")
 
+# set context window
+Settings.context_window = 4096
 # Create the chat llm
-llm = AzureChatOpenAI(
+Settings.llm = AzureChatOpenAI(
     deployment_name="gpt-35-turbo",
     openai_api_key=st.session_state.config["OPENAI_API_KEY"],
     openai_api_base=st.session_state.config["OPENAI_API_BASE"],
@@ -85,9 +90,9 @@ llm = AzureChatOpenAI(
 
 # Create the embedding llm
 embedding_llm = LangchainEmbedding(
-    OpenAIEmbeddings(
+    AzureOpenAIEmbeddings(
         model="text-embedding-ada-002",
-        deployment="text-embedding-ada-002",
+        azure_deployment="text-embedding-ada-002",
         openai_api_key=st.session_state.config["OPENAI_API_KEY"],
         openai_api_base=st.session_state.config["OPENAI_API_BASE"],
         openai_api_type=st.session_state.config["OPENAI_API_TYPE"],
@@ -97,13 +102,12 @@ embedding_llm = LangchainEmbedding(
 )
 
 # Create llama_index LLMPredictor
-llm_predictor = LLMPredictor(llm=llm)
+llm_predictor = LangChainLLM(Settings.llm)
 max_input_size = 4096
 num_output = 256
 max_chunk_overlap = 0.5
 prompt_helper = PromptHelper(max_input_size, num_output, max_chunk_overlap)
 
-llama_logger = LlamaLogger()
 
 # Create llama_index ServiceContext
 service_context = ServiceContext.from_defaults(
@@ -111,7 +115,6 @@ service_context = ServiceContext.from_defaults(
     prompt_helper=prompt_helper,
     embed_model=embedding_llm,
     chunk_size_limit=1000,
-    llama_logger=llama_logger
 )
 
 if uploaded_file and uploaded_file.name != st.session_state.current_file:
