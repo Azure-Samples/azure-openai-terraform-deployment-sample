@@ -1,7 +1,7 @@
 
 langchain==0.0.329
 openai==0.27.5
-streamlit==1.22.0
+streamlit==1.30.0
 tiktoken==0.3.3
 llama-index==0.8.56
 python-dotenv==1.0.0
