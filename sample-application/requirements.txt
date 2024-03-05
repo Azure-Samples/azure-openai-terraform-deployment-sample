@@ -1,6 +1,6 @@
 langchain==0.1.11
 openai==1.13.3
-streamlit==1.22.0
+streamlit==1.30.0
 tiktoken==0.3.3
 llama-index==0.10.15
 llama-index-llms-langchain==0.1.3
