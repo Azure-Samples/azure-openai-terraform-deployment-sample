@@ -28,31 +28,40 @@ data:
     OPENAI_API_VERSION=2023-05-15
     OPENAI_API_BASE=${endpoint}
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   labels:
     run: chatbot
-    azure.workload.identity/use: "true"
   name: chatbot
   namespace: chatbot
 spec:
-  serviceAccountName: chatbot
-  containers:
-  - image: ${registry}.azurecr.io/chatbot:latest
-    imagePullPolicy: Always
-    name: chatbot
-    ports:
-    - containerPort: 8501
-      protocol: TCP
-    volumeMounts:
-    - mountPath: /app/.env
-      name: chatbot-config
-      subPath: .env
-  volumes:
-  - name: chatbot-config
-    configMap:
-      name: chatbot-config
+  replicas: 1
+  selector:
+    matchLabels:
+      run: chatbot
+  template:
+    metadata:
+      labels:
+        run: chatbot
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: chatbot
+      containers:
+      - image: ${registry}.azurecr.io/chatbot:latest
+        imagePullPolicy: Always
+        name: chatbot
+        ports:
+        - containerPort: 8501
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /app/.env
+          name: chatbot-config
+          subPath: .env
+      volumes:
+      - name: chatbot-config
+        configMap:
+          name: chatbot-config
 ---
 apiVersion: v1
 kind: Service
