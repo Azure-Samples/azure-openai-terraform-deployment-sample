@@ -38,9 +38,9 @@ module "aks" {
     acr = azurerm_container_registry.acr.id
   }
 
-  network_policy                 = "azure"
-  net_profile_dns_service_ip     = "10.0.0.10"
-  net_profile_service_cidr       = "10.0.0.0/16"
+  network_policy             = "azure"
+  net_profile_dns_service_ip = "10.0.0.10"
+  net_profile_service_cidr   = "10.0.0.0/16"
 
   key_vault_secrets_provider_enabled = true
   secret_rotation_enabled            = true

@@ -14,7 +14,7 @@ variable "chat_model_version" {
 }
 
 variable "scale_type" {
-  type    = string
+  type        = string
   description = "values: GlobalStandard, Standard"
-  default = "GlobalStandard"
+  default     = "GlobalStandard"
 }

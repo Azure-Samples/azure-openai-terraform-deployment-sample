@@ -1,5 +1,12 @@
 #!/bin/bash
 az aks get-credentials --resource-group ${resourceGroup} --name ${aksName} --overwrite-existing
+
+kubectl create namespace chatbot --dry-run=client -o yaml | kubectl apply -f -
+
+helm repo add qdrant https://qdrant.github.io/qdrant-helm
+helm repo update
+helm upgrade --install  --namespace chatbot --set image.tag=v1.11.3 chatbot qdrant/qdrant
+
 az acr build --registry ${registry} --image chatbot:latest ./../sample-application
 
 az identity federated-credential create --name chatbotfederatedidentity --identity-name chatbot --resource-group ${resourceGroup} --issuer ${oidc_url} --subject system:serviceaccount:chatbot:chatbot
