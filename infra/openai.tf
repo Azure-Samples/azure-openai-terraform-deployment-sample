@@ -21,7 +21,7 @@ module "openai" {
       model_format  = "OpenAI"
       model_name    = var.chat_model_name
       model_version = var.chat_model_version
-      scale_type    = "GlobalStandard"
+      scale_type    = var.scale_type
       capacity      = 30
     },
     "embedding_model" = {
