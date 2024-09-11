@@ -1,6 +1,6 @@
 module "aks" {
   source                            = "Azure/aks/azurerm"
-  version                           = "7.4.0"
+  version                           = "9.1.0"
   resource_group_name               = azurerm_resource_group.this.name
   kubernetes_version                = null # will install the latest version
   orchestrator_version              = null # will install the latest version
@@ -12,7 +12,6 @@ module "aks" {
   role_based_access_control_enabled = true
   rbac_aad                          = false
   private_cluster_enabled           = false
-  http_application_routing_enabled  = false
   enable_auto_scaling               = true
   enable_host_encryption            = false
   log_analytics_workspace_enabled   = false
@@ -38,8 +37,6 @@ module "aks" {
   attached_acr_id_map = {
     acr = azurerm_container_registry.acr.id
   }
-
-  ingress_application_gateway_enabled = false
 
   network_policy                 = "azure"
   net_profile_dns_service_ip     = "10.0.0.10"
