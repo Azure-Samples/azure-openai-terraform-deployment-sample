@@ -8,6 +8,7 @@ create a ".env" file with the following:
     OPENAI_API_VERSION = 2023-05-15
     OPENAI_API_BASE = 'https://eastus.api.cognitive.microsoft.com/' # Replace with the URL of an Azure OpenAI
     OPENAI_API_KEY = '' # Replace with the corresponding API key
+    CHAT_MODEL_NAME = gpt-4o
 
 To run the application, use the following command:
 streamlit run chatbot.py
@@ -81,7 +82,7 @@ uploaded_file = st.file_uploader("Choose a file")
 Settings.context_window = 4096
 # Create the chat llm
 Settings.llm = AzureChatOpenAI(
-    deployment_name="gpt-35-turbo",
+    deployment_name=st.session_state.config["CHAT_MODEL_NAME"],
     openai_api_key=st.session_state.config["OPENAI_API_KEY"],
     openai_api_base=st.session_state.config["OPENAI_API_BASE"],
     openai_api_type=st.session_state.config["OPENAI_API_TYPE"],

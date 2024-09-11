@@ -17,12 +17,12 @@ module "openai" {
   }
   deployment = {
     "chat_model" = {
-      name          = "gpt-35-turbo"
+      name          = var.chat_model_name
       model_format  = "OpenAI"
-      model_name    = "gpt-35-turbo"
-      model_version = "0301"
-      scale_type    = "Standard"
-      capacity      = 120
+      model_name    = var.chat_model_name
+      model_version = var.chat_model_version
+      scale_type    = var.scale_type
+      capacity      = 30
     },
     "embedding_model" = {
       name          = "text-embedding-ada-002"
