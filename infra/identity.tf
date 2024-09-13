@@ -1,4 +1,4 @@
-resource azurerm_user_assigned_identity chatbot {
+resource "azurerm_user_assigned_identity" "chatbot" {
   name                = "chatbot"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location

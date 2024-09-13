@@ -9,3 +9,4 @@ python-dotenv==1.0.0
 pypdf==4.1.0
 azure-core==1.26.4
 azure-identity==1.13.0
+llama-index-vector-stores-qdrant==0.2.17

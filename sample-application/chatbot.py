@@ -20,17 +20,18 @@ import logging
 from langchain.chat_models import AzureChatOpenAI
 from langchain.embeddings import AzureOpenAIEmbeddings
 from azure.identity import ManagedIdentityCredential
+import qdrant_client
 
 import streamlit as st
+
+from llama_index.vector_stores.qdrant import QdrantVectorStore
 from llama_index.core import (
     SimpleDirectoryReader,
-    GPTVectorStoreIndex,
+    VectorStoreIndex,
     PromptHelper,
     ServiceContext,
     StorageContext,
-    load_index_from_storage,
     Settings
-
 )
 
 from llama_index.llms.langchain import LangChainLLM
@@ -39,13 +40,26 @@ from llama_index.embeddings.langchain import LangchainEmbedding
 
 from dotenv import load_dotenv, dotenv_values
 
-
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logging.getLogger("llama_index").setLevel(logging.DEBUG)
 
 index = None
 doc_path = "./data/"
-index_file = "index.json"
+
+client = qdrant_client.QdrantClient(
+    # you can use :memory: mode for fast and light-weight experiments,
+    # it does not require to have Qdrant deployed anywhere
+    # but requires qdrant-client >= 1.1.1
+    # location=":memory:"
+    # otherwise set Qdrant instance address with:
+    # url="http://<host>:<port>"
+    # otherwise set Qdrant instance with host and port:
+    host="chatbot-qdrant",
+    port=6333
+    # set API KEY for Qdrant Cloud
+    # api_key="<qdrant-api-key>",
+)
+
 
 if "config" not in st.session_state:
     # Read the environment variables
@@ -119,47 +133,48 @@ service_context = ServiceContext.from_defaults(
 )
 
 if uploaded_file and uploaded_file.name != st.session_state.current_file:
-    # Ingest the document and create the index
-    with st.spinner('Ingesting the file..'):
-        doc_files = os.listdir(doc_path)
-        for doc_file in doc_files:
-            os.remove(doc_path + doc_file)
+    st.session_state.current_file = uploaded_file.name
+    st.session_state.response = ""  # clean up the response when new file is uploaded
+    if not client.collection_exists(collection_name=uploaded_file.name):
+        # Ingest the document and create the index
+        with st.spinner('Ingesting the file..'):
+            doc_files = os.listdir(doc_path)
+            for doc_file in doc_files:
+                os.remove(doc_path + doc_file)
 
-        bytes_data = uploaded_file.read()
-        with open(f"{doc_path}{uploaded_file.name}", "wb") as f:
-            f.write(bytes_data)
+            bytes_data = uploaded_file.read()
+            with open(f"{doc_path}{uploaded_file.name}", "wb") as f:
+                f.write(bytes_data)
 
-        loader = SimpleDirectoryReader(doc_path, recursive=True, exclude_hidden=True)
-        documents = loader.load_data()
-        sidebar_placeholder.header("Current Processing Document:")
-        sidebar_placeholder.subheader(uploaded_file.name)
-        sidebar_placeholder.write(documents[0].get_text()[:500] + "...")
+            loader = SimpleDirectoryReader(doc_path, recursive=True, exclude_hidden=True)
+            documents = loader.load_data()
+            sidebar_placeholder.header("Current Processing Document:")
+            sidebar_placeholder.subheader(uploaded_file.name)
 
-        index = GPTVectorStoreIndex.from_documents(
-            documents, service_context=service_context
-        )
+            vector_store = QdrantVectorStore(client=client, collection_name=uploaded_file.name)
+            storage_context = StorageContext.from_defaults(vector_store=vector_store)
+            index = VectorStoreIndex.from_documents(
+                documents,
+                service_context=service_context,
+                storage_context=storage_context,
+            )
+            index.set_index_id("vector_index")
+        st.success('Done!')
 
-        index.set_index_id("vector_index")
-        index.storage_context.persist(index_file)
-        st.session_state.current_file = uploaded_file.name
-        st.session_state.response = ""  # clean up the response when new file is uploaded
-    st.success('Done!')
-
-elif os.path.exists(index_file):
-    # Read from storage context
-    storage_context = StorageContext.from_defaults(persist_dir=index_file)
-    index = load_index_from_storage(
-        storage_context, index_id="vector_index", service_context=service_context
+if st.session_state.current_file:
+    vector_store = QdrantVectorStore(client=client, collection_name=uploaded_file.name)
+    storage_context = StorageContext.from_defaults(vector_store=vector_store)
+    index = VectorStoreIndex.from_vector_store(
+        vector_store=vector_store,
+        service_context=service_context,
+        storage_context=storage_context,
+        index_id="vector_index",
     )
-
-    loader = SimpleDirectoryReader(doc_path, recursive=True, exclude_hidden=True)
-    documents = loader.load_data()
-    doc_filename = os.listdir(doc_path)[0]
+    doc_filename = st.session_state.current_file
     sidebar_placeholder.header("Current Processing Document:")
-    sidebar_placeholder.subheader(doc_filename)
-    sidebar_placeholder.write(documents[0].get_text()[:500] + "...")
+    sidebar_placeholder.subheader(uploaded_file.name)
 
-if index:
+if index or st.session_state.response != "":
     st.text_input("Ask something: ", key="prompt", on_change=send_click)
     st.button("Send", on_click=send_click)
     if st.session_state.response:
