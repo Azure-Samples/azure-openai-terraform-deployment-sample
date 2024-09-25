@@ -20,6 +20,7 @@ import logging
 from langchain.chat_models import AzureChatOpenAI
 from langchain.embeddings import AzureOpenAIEmbeddings
 from azure.identity import ManagedIdentityCredential
+from traceloop.sdk import Traceloop
 
 import streamlit as st
 from llama_index.core import (
@@ -42,6 +43,8 @@ from dotenv import load_dotenv, dotenv_values
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logging.getLogger("llama_index").setLevel(logging.DEBUG)
+
+Traceloop.init(api_key="", app_name="chatbot", api_endpoint="http://tempo-distributor.default.svc.cluster.local:4318")
 
 index = None
 doc_path = "./data/"

@@ -4,6 +4,12 @@ az acr build --registry ${registry} --image chatbot:latest ./../sample-applicati
 
 az identity federated-credential create --name chatbotfederatedidentity --identity-name chatbot --resource-group ${resourceGroup} --issuer ${oidc_url} --subject system:serviceaccount:chatbot:chatbot
 
+# Install Grafana and Grafana Tempo in the default namespace
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+helm upgrade -f microservices-tempo-values.yaml --install tempo grafana/tempo-distributed
+helm upgrade -f microservices-grafana-values.yaml --install grafana grafana/grafana
+
 kubectl create namespace chatbot --dry-run=client -o yaml | kubectl apply -f -
 kubectl apply -f - <<EOF
 ---

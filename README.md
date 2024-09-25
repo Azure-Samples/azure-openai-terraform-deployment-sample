@@ -73,6 +73,30 @@ The easiest way to run this sample is to run it creating a new [GitHub Codespace
 
 ![app](/images/application.png)
 
+- You can test the application by uploading a sample `file.txt` with the following content:
+
+    ```
+    Saverio and Sofia both work at Microsoft.
+    They live in Switzerland.
+    Saverio is Italian.
+    Sofia is from Portugal.
+    ```
+
+  And then ask a question like the following screenshot:
+
+  ![app](/images/Who_is_Sofia.png)
+
+- Access the Grafana dashboard by running the following command.
+
+    ```bash
+    kubectl port-forward svc/grafana 8080:80
+    ```
+    And point your browser to `http://localhost:8080`.
+
+    You can browse to the metrics explorer and see the traces collected by the application. In the traces you are able to inspect the actual prompt that the llama_index library is using to query the OpenAI service.
+
+    ![app](/images/grafana_tempo.png)
+
 ## Resources
 
 - [Azure OpenAI](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/overview)
