@@ -73,6 +73,13 @@ The easiest way to run this sample is to run it creating a new [GitHub Codespace
 
 ![app](/images/application.png)
 
+- Access the Grafana dashboard by running the following command.
+
+    ```bash
+    kubectl port-forward svc/grafana 8080:80
+    ```
+    And point your browser to `http://localhost:8080`.
+
 ## Resources
 
 - [Azure OpenAI](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/overview)
