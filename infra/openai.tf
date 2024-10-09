@@ -1,37 +1,53 @@
+resource "random_integer" "this" {
+  max = 999999
+  min = 100000
+}
+
 module "openai" {
-  source              = "Azure/openai/azurerm"
-  version             = "0.1.3"
+  source              = "Azure/avm-res-cognitiveservices-account/azurerm"
+  version             = "0.4.0"
+  kind                = "OpenAI"
+  name                = "azure-openai-${random_integer.this.result}"
   resource_group_name = azurerm_resource_group.this.name
+  sku_name            = "S0"
   location            = azurerm_resource_group.this.location
-  private_endpoint = {
+  private_endpoints = {
     "pe_endpoint" = {
-      private_dns_entry_enabled       = true
-      dns_zone_virtual_network_link   = "dns_zone_link_openai"
-      is_manual_connection            = false
       name                            = "openai_pe"
+      private_dns_zone_resource_ids   = toset([azurerm_private_dns_zone.zone.id])
       private_service_connection_name = "openai_pe_connection"
-      subnet_name                     = "subnet0"
-      vnet_name                       = module.vnet.vnet_name
-      vnet_rg_name                    = azurerm_resource_group.this.name
+      subnet_resource_id              = module.vnet.vnet_subnets_name_id["subnet0"]
     }
   }
-  deployment = {
+  cognitive_deployments  = {
     "chat_model" = {
       name          = var.chat_model_name
-      model_format  = "OpenAI"
-      model_name    = var.chat_model_name
-      model_version = var.chat_model_version
-      scale_type    = var.scale_type
-      capacity      = 30
+      model = {
+        format  = "OpenAI"
+        name    = var.chat_model_name
+        version = var.chat_model_version
+      }
+      scale = {
+        capacity = 120
+        type     = var.scale_type
+      }
     },
     "embedding_model" = {
-      name          = "text-embedding-ada-002"
-      model_format  = "OpenAI"
-      model_name    = "text-embedding-ada-002"
-      model_version = "2"
-      scale_type    = "Standard"
-      capacity      = 120
+      name          = var.emb_model_name
+      model = {
+        format  = "OpenAI"
+        name    = var.emb_model_name
+        version = "2"
+      }
+      scale = {
+        capacity = 120
+        type     = var.scale_type
+      }
     },
+  }
+  network_acls = {
+    default_action = "Deny"
+    virtual_network_rules = toset([{subnet_id = module.vnet.vnet_subnets_name_id["subnet0"]}])
   }
   depends_on = [
     azurerm_resource_group.this,
