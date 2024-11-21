@@ -1,6 +1,6 @@
 {
   "name": "Terraform AzureCLI and Kubectl",
-  "postAttachCommand": "bash .devcontainer/script.sh",
+  "postAttachCommand": "source .devcontainer/script.sh",
   "customizations": {
     "vscode": {
       "extensions": [
